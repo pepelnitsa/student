@@ -2,6 +2,9 @@
 #include <string>
 using namespace std;
 
+/// <summary>
+/// Represents a date and time with day, month, and year.
+/// </summary>
 class DateTime
 {
     int day;
@@ -9,6 +12,9 @@ class DateTime
     int year;
 
 public:
+    /// <summary>
+    /// // Default constructor initializes the date to January 1, 2000.
+    /// </summary>
     DateTime() : day(1), month(1), year(2000) {}
 
     DateTime(int day, int month, int year)
@@ -17,7 +23,10 @@ public:
         SetMonth(month);
         SetYear(year);
     }
-
+    /// <summary>
+    /// Set the day of the date.
+    /// </summary>
+    /// <param name="day"></param>
     void SetDay(int day)
     {
         if (day > 0 && day <= 31)
@@ -30,12 +39,18 @@ public:
             throw "ERROR!";
         }
     }
-
+    /// <summary>
+    /// Get the day of the date.
+    /// </summary>
+    /// <returns></returns>
     int GetDay() const
     {
         return day;
     }
-
+    /// <summary>
+    /// Set the month of the date.
+    /// </summary>
+    /// <param name="month"></param>
     void SetMonth(int month)
     {
         if (month >= 1 && month <= 12)
@@ -48,28 +63,41 @@ public:
             throw "ERROR!";
         }
     }
-
+    /// <summary>
+    /// Get the month of the date.
+    /// </summary>
+    /// <returns></returns>
     int GetMonth() const
     {
         return month;
     }
-
+    /// <summary>
+    /// Set the year of the date.
+    /// </summary>
+    /// <param name="year"></param>
     void SetYear(int year)
     {
         this->year = year;
     }
-
+    /// <summary>
+    /// // Get the year of the date.
+    /// </summary>
+    /// <returns></returns>
     int GetYear() const
     {
         return year;
     }
-
+    /// <summary>
+    /// Print the date in the format "day.month.year."
+    /// </summary>
     void Print() const
     {
         cout << day << "." << month << "." << year;
     }
 };
-
+/// <summary>
+/// Represents a student with personal information and academic performance data.
+/// </summary>
 class Student
 {
     string name;
@@ -90,10 +118,13 @@ class Student
     int exam_rates_count;
 
 public:
+    /// <summary>
+    /// Default constructor for Student, sets default values.
+    /// </summary>
     Student() : Student("John", "Doe", "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) {}
 
     Student(string name, string surname) : Student(name, surname, "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) {}
-
+    
     Student(string name, string surname, string father_name, string address, string phone_number, const DateTime& birthday, const DateTime& study_start)
     {
         SetName(name);
@@ -104,7 +135,7 @@ public:
         SetBirthday(birthday);
         SetStudyStart(study_start);
     }
-
+    
     ~Student()
     {
         if (hometask_rates != nullptr)
@@ -123,19 +154,34 @@ public:
             exam_rates = nullptr;
         }
     }
-
+    /// <summary>
+    /// Set the student's name. Get the student's name.
+    /// </summary>
     void SetName(string name) { this->name = name; }
     string GetName() const { return name; }
 
+    /// <summary>
+    /// Set the student's surname. Get the student's surname.
+    /// </summary>
     void SetSurname(string surname) { this->surname = surname; }
     string GetSurname() const { return surname; }
 
+    /// <summary>
+    /// Set the student's father's name. Get the student's father's name.
+    /// </summary>
     void SetFatherName(string father_name) { this->father_name = father_name; }
     string GetFatherName() const { return father_name; }
 
+    /// <summary>
+    /// Set the student's address. Get the student's address.
+    /// </summary>
     void SetAddress(string address) { this->address = address; }
     string GetAddress() const { return address; }
-
+    
+    /// <summary>
+    /// Set the student's phone number
+    /// </summary>
+    /// <param name="phone_number"></param>
     void SetPhoneNumber(string phone_number)
     {
         if (phone_number.length() == 10)
@@ -147,22 +193,46 @@ public:
         }
     }
 
+    /// <summary>
+    /// Get the student's phone number.
+    /// </summary>
+    /// <returns></returns>
     string GetPhoneNumber() const { return phone_number; }
-
+    
+    /// <summary>
+    /// Set the student's birthday.
+    /// </summary>
+    /// <param name="birthday"></param>
     void SetBirthday(const DateTime& birthday)
     {
         this->birthday = birthday;
     }
 
+    /// <summary>
+    /// Get the student's birthday.
+    /// </summary>
+    /// <returns></returns>
     DateTime GetBirthday() const { return birthday; }
 
+    /// <summary>
+    /// Set the student's study start date.
+    /// </summary>
+    /// <param name="study_start"></param>
     void SetStudyStart(const DateTime& study_start)
     {
         this->study_start = study_start;
     }
 
+    /// <summary>
+    /// Get the student's study start date.
+    /// </summary>
+    /// <returns></returns>
     DateTime GetStudyStart() const { return study_start; }
 
+    /// <summary>
+    /// Add a homework rate to the student's record.
+    /// </summary>
+    /// <param name="rate"></param>
     void AddHometaskRate(int rate)
     {
         if (rate >= 1 && rate <= 12)
@@ -187,6 +257,10 @@ public:
         }
     }
 
+    /// <summary>
+    /// Add a practice rate to the student's record.
+    /// </summary>
+    /// <param name="rate"></param>
     void AddPracticeRate(int rate)
     {
         if (rate >= 1 && rate <= 12)
@@ -211,6 +285,10 @@ public:
         }
     }
 
+    /// <summary>
+    /// Add an exam rate to the student's record.
+    /// </summary>
+    /// <param name="rate"></param>
     void AddExamRate(int rate)
     {
         if (rate >= 1 && rate <= 12)
@@ -235,6 +313,9 @@ public:
         }
     }
 
+    /// <summary>
+    /// Print the student's homework rates.
+    /// </summary>
     void PrintHometaskRates() const
     {
         cout << "Home Task Rates: ";
@@ -247,6 +328,9 @@ public:
         cout << endl;
     }
 
+    /// <summary>
+    /// Print the student's practice rates.
+    /// </summary>
     void PrintPracticeRates() const
     {
         cout << "Practice Rates: ";
@@ -259,6 +343,9 @@ public:
         cout << endl;
     }
 
+    /// <summary>
+    /// Print the student's exam rates.
+    /// </summary>
     void PrintExamRates() const
     {
         cout << "Exam Rates: ";
@@ -271,6 +358,9 @@ public:
         cout << endl;
     }
 
+    /// <summary>
+    /// Print the student's personal information.
+    /// </summary>
     void Print() const
     {
         cout << "Name: " << name << endl;
