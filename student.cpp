@@ -2,6 +2,34 @@
 #include <string>
 using namespace std;
 
+
+class Sort {
+public:
+    Sort() = delete;
+
+    static void Bubble(int arr[], int size) {
+        for (int i = 0; i < size - 1; i++) {
+            for (int j = 0; j < size - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    swap(arr[j], arr[j + 1]);
+                }
+            }
+        }
+    }
+
+    static void Selection(int arr[], int size) {
+        for (int i = 0; i < size - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < size; j++) {
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            swap(arr[i], arr[minIndex]);
+        }
+    }
+};
+
 /// <summary>
 /// Represents a date and time with day, month, and year.
 /// </summary>
@@ -229,6 +257,29 @@ public:
     /// <returns></returns>
     DateTime GetStudyStart() const { return study_start; }
 
+    int* GetExamRates() const { return exam_rates; }
+
+    int GetExamRatesCount() const
+    {
+        return exam_rates_count;
+    }
+
+    double CalculateAverageHomeworkRate() const
+    {
+        if (hometask_rates_count == 0 || hometask_rates == nullptr)
+        {
+            return 0.0; // Return 0 if there are no homework rates or the array is not allocated.
+        }
+
+        double totalRate = 0.0;
+        for (int i = 0; i < hometask_rates_count; i++)
+        {
+            totalRate += hometask_rates[i];
+        }
+
+        return totalRate / static_cast<double>(hometask_rates_count);
+    }
+
     /// <summary>
     /// Add a homework rate to the student's record.
     /// </summary>
@@ -377,8 +428,207 @@ public:
     }
 };
 
-int main()
+enum class Specialization
 {
+    Designer,
+    Programmer,
+    Mathematician,
+    Linguist,
+    Other
+};
+
+class Group
+{
+    Student* students;
+    int groupSize;
+    int capacity;
+    string groupName;
+    Specialization specialization;
+    int courseNumber;
+
+public:
+    Group() : groupName("Unknown Group"), specialization(Specialization::Other), courseNumber(1), students(nullptr), groupSize(0), capacity(0) {}
+
+    Group(const Group& other) : groupName(other.groupName), specialization(other.specialization), courseNumber(other.courseNumber), groupSize(other.groupSize), capacity(other.capacity)
+    {
+        students = new Student[capacity];
+        for (int i = 0; i < groupSize; i++)
+        {
+            students[i] = other.students[i];
+        }
+    }
+
+    ~Group()
+    {
+        delete[] students;
+    }
+
+    Student GetStudent(int index) const
+    {
+        if (index >= 0 && index < groupSize)
+        {
+            return students[index];
+        }
+        throw out_of_range("Invalid student index");
+    }
+
+    void ShowAllStudents() const
+    {
+        cout << "Group Name: " << groupName << endl;
+        cout << "Specialization: " << GetSpecializationString() << endl;
+        cout << "Course Number: " << courseNumber << endl;
+
+        cout << "Students in alphabetical order:" << endl;
+        for (int i = 0; i < groupSize; i++)
+        {
+            cout << students[i].GetSurname() << " " << students[i].GetName() << endl;
+        }
+    }
+    
+    void AddStudent(const Student& newStudent)
+    {
+        if (groupSize == capacity)
+        {
+            int newCapacity = (capacity == 0) ? 1 : capacity * 2;
+            Student* newStudents = new Student[newCapacity];
+
+            for (int i = 0; i < groupSize; i++)
+            {
+                newStudents[i] = students[i];
+            }
+
+            delete[] students;
+            students = newStudents;
+            capacity = newCapacity;
+        }
+
+        students[groupSize] = newStudent;
+        groupSize++;
+    }
+
+    void MergeGroups(const Group& otherGroup)
+    {
+        for (int i = 0; i < otherGroup.groupSize; i++)
+        {
+            AddStudent(otherGroup.students[i]);
+        }
+    }
+
+    void TransferStudent(Group& targetGroup, int studentIndex)
+    {
+        if (studentIndex >= 0 && studentIndex < groupSize)
+        {
+            Student studentToTransfer = students[studentIndex];
+
+            for (int i = studentIndex; i < groupSize - 1; i++)
+            {
+                students[i] = students[i + 1];
+            }
+
+            groupSize--;
+
+            targetGroup.AddStudent(studentToTransfer);
+        }
+        else
+        {
+            throw out_of_range("Invalid student index for transfer");
+        }
+    }
+
+    void RemoveFailedStudents()
+    {
+        int passCount = 0;
+
+        for (int i = 0; i < groupSize; i++)
+        {
+            bool passed = true;
+
+            int examRatesCount = students[i].GetExamRatesCount();
+
+            int* examRates = students[i].GetExamRates();
+
+            for (int j = 0; j < examRatesCount; j++)
+            {
+                if (examRates[j] < 4)
+                {
+                    passed = false;
+                    break;
+                }
+            }
+
+            if (passed)
+            {
+                students[passCount] = students[i];
+                passCount++;
+            }
+        }
+
+        groupSize = passCount;
+    }
+
+    void RemoveWorstStudent()
+    {
+        if (groupSize == 0)
+        {
+            return;
+        }
+
+        int worstStudentIndex = 0;
+        double worstAverageRate = students[0].CalculateAverageHomeworkRate();
+
+        for (int i = 1; i < groupSize; i++)
+        {
+            double averageRate = students[i].CalculateAverageHomeworkRate();
+            if (averageRate < worstAverageRate)
+            {
+                worstStudentIndex = i;
+                worstAverageRate = averageRate;
+            }
+        }
+
+        for (int i = worstStudentIndex; i < groupSize - 1; i++)
+        {
+            students[i] = students[i + 1];
+        }
+
+        groupSize--;
+    }
+
+    string GetSpecializationString() const
+    {
+        switch (specialization)
+        {
+        case Specialization::Designer: return "Designer";
+        case Specialization::Programmer: return "Programmer";
+        case Specialization::Mathematician: return "Mathematician";
+        case Specialization::Linguist: return "Linguist";
+        case Specialization::Other: return "Other";
+        default: return "Unknown";
+        }
+    }
+};
+
+
+int main() {
+
+    int ar[] = { 1, 6, 2, 7, 3, 8, 4, 9, 5, 10 };
+    int n = sizeof(ar) / sizeof(ar[0]);
+
+    Sort::Bubble(ar, n);
+
+    for (int i = 0; i < n; i++) {
+        cout << ar[i] << " ";
+    }
+    cout << endl;
+
+    int ar2[] = { 1, 6, 2, 7, 3, 8, 4, 9, 5, 10 };
+    Sort::Selection(ar2, n);
+
+    for (int i = 0; i < n; i++) {
+        cout << ar2[i] << " ";
+    }
+    cout << endl;
+
     Student s1;
     s1.Print();
 
