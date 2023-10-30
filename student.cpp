@@ -1,12 +1,84 @@
 ﻿#include <iostream>
 #include <string>
+#include <fstream>
+
 using namespace std;
 
+/// <summary>
+/// 
+/// </summary>
+class Logger {
+    static Logger* instance; // 1) приватный статический указатель на единственный экземпляр класса
+    int log_сount = 0; // сколько раз происходила запись строки в файл
+    string path = "C:/1/log.txt";
 
+    /// <summary>
+    /// 
+    /// </summary>
+    Logger() // 2) конструктор - приватный (запрещает создавать объекты за пределами класса)
+    {
+    }
+
+public:
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    static Logger* GetInstance() // 3) публичный статический геттер на получение адреса единственного объекта
+    {
+        // если объекта журнала не существует - он создаётся
+        return instance == nullptr ? instance = new Logger() : instance;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
+    void Write(string message) // записать в журнал строку текста
+    {
+        log_сount++;
+        cout << log_сount << ": " << message << "\n";
+        // альтернативные варианты:
+        // 1) записать строку в коллекцию (массив, список и тд) и хранить данные в памяти
+        // 2) записать строку в файл
+        ofstream output_file(path, ios::app);
+        if (output_file.is_open())
+        {
+            output_file << message << "\n";
+            output_file.close();
+            //cout << "Строка успешно записана в файл.";
+        }
+        else
+        {
+            //cerr << "Не удалось открыть файл для записи.";
+        }
+        // 3) отправлять данные по сети
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="value"></param>
+    void Write(int value)
+    {
+        Write(to_string(value));
+    }
+};
+
+Logger* Logger::instance = nullptr;
+
+/// <summary>
+/// 
+/// </summary>
 class Sort {
 public:
     Sort() = delete;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="arr"></param>
+    /// <param name="size"></param>
     static void Bubble(int arr[], int size) {
         for (int i = 0; i < size - 1; i++) {
             for (int j = 0; j < size - i - 1; j++) {
@@ -17,6 +89,9 @@ public:
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     static void Selection(int arr[], int size) {
         for (int i = 0; i < size - 1; i++) {
             int minIndex = i;
@@ -33,8 +108,7 @@ public:
 /// <summary>
 /// Represents a date and time with day, month, and year.
 /// </summary>
-class DateTime
-{
+class DateTime {
     int day;
     int month;
     int year;
@@ -149,12 +223,22 @@ public:
     /// <summary>
     /// Default constructor for Student, sets default values.
     /// </summary>
-    Student() : Student("John", "Doe", "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) {}
+    Student() : Student("John", "Doe", "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) { ThrowError(); }
 
-    Student(string name, string surname) : Student(name, surname, "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) {}
-    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    Student(string name, string surname) : Student(name, surname, "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) { ThrowError(); }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="birthday"></param>
     Student(string name, string surname, string father_name, string address, string phone_number, const DateTime& birthday, const DateTime& study_start)
     {
+        Logger::GetInstance()->Write("Created a new Student object: " + name + " " + surname);
+        ThrowError();
         SetName(name);
         SetSurname(surname);
         SetFatherName(father_name);
@@ -163,9 +247,14 @@ public:
         SetBirthday(birthday);
         SetStudyStart(study_start);
     }
-    
+
+    /// <summary>
+    /// 
+    /// </summary>
     ~Student()
     {
+        Logger::GetInstance()->Write("Destroyed a Student object: " + name + " " + surname);
+
         if (hometask_rates != nullptr)
         {
             delete[] hometask_rates;
@@ -180,6 +269,34 @@ public:
         {
             delete[] exam_rates;
             exam_rates = nullptr;
+        }
+    }
+
+    static int student_count;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    bool CountError()
+    {
+        return student_count <= 15;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void ThrowError()
+    {
+        try {
+            if (CountError())
+                student_count++;
+            else
+                throw 1;
+        }
+        catch (int)
+        {
+            cout << "Maximum Student object limit reached." << endl;
         }
     }
     /// <summary>
@@ -205,7 +322,7 @@ public:
     /// </summary>
     void SetAddress(string address) { this->address = address; }
     string GetAddress() const { return address; }
-    
+
     /// <summary>
     /// Set the student's phone number
     /// </summary>
@@ -226,7 +343,7 @@ public:
     /// </summary>
     /// <returns></returns>
     string GetPhoneNumber() const { return phone_number; }
-    
+
     /// <summary>
     /// Set the student's birthday.
     /// </summary>
@@ -257,13 +374,25 @@ public:
     /// <returns></returns>
     DateTime GetStudyStart() const { return study_start; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     int* GetExamRates() const { return exam_rates; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     int GetExamRatesCount() const
     {
         return exam_rates_count;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     double CalculateAverageHomeworkRate() const
     {
         if (hometask_rates_count == 0 || hometask_rates == nullptr)
@@ -428,6 +557,7 @@ public:
     }
 };
 
+
 enum class Specialization
 {
     Designer,
@@ -437,6 +567,9 @@ enum class Specialization
     Other
 };
 
+/// <summary>
+/// 
+/// </summary>
 class Group
 {
     Student* students;
@@ -447,10 +580,19 @@ class Group
     int courseNumber;
 
 public:
-    Group() : groupName("Unknown Group"), specialization(Specialization::Other), courseNumber(1), students(nullptr), groupSize(0), capacity(0) {}
 
+    /// <summary>
+    /// 
+    /// </summary>
+    Group() : groupName("Unknown Group"), specialization(Specialization::Other), courseNumber(1), students(nullptr), groupSize(0), capacity(0) { ThrowError(); }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="other"></param>
     Group(const Group& other) : groupName(other.groupName), specialization(other.specialization), courseNumber(other.courseNumber), groupSize(other.groupSize), capacity(other.capacity)
     {
+        ThrowError();
         students = new Student[capacity];
         for (int i = 0; i < groupSize; i++)
         {
@@ -458,11 +600,19 @@ public:
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     ~Group()
     {
         delete[] students;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     Student GetStudent(int index) const
     {
         if (index >= 0 && index < groupSize)
@@ -472,6 +622,36 @@ public:
         throw out_of_range("Invalid student index");
     }
 
+    static int group_count;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    bool CountError()
+    {
+        return group_count <= 15;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void ThrowError()
+    {
+        try {
+            if (CountError())
+                group_count++;
+            else
+                throw 1;
+        }
+        catch (int)
+        {
+            cout << "Maximum Group object limit reached." << endl;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     void ShowAllStudents() const
     {
         cout << "Group Name: " << groupName << endl;
@@ -484,7 +664,11 @@ public:
             cout << students[i].GetSurname() << " " << students[i].GetName() << endl;
         }
     }
-    
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="newStudent"></param>
     void AddStudent(const Student& newStudent)
     {
         if (groupSize == capacity)
@@ -506,6 +690,10 @@ public:
         groupSize++;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="otherGroup"></param>
     void MergeGroups(const Group& otherGroup)
     {
         for (int i = 0; i < otherGroup.groupSize; i++)
@@ -514,6 +702,11 @@ public:
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="targetGroup"></param>
+    /// <param name="studentIndex"></param>
     void TransferStudent(Group& targetGroup, int studentIndex)
     {
         if (studentIndex >= 0 && studentIndex < groupSize)
@@ -535,6 +728,9 @@ public:
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     void RemoveFailedStudents()
     {
         int passCount = 0;
@@ -566,6 +762,9 @@ public:
         groupSize = passCount;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     void RemoveWorstStudent()
     {
         if (groupSize == 0)
@@ -594,6 +793,10 @@ public:
         groupSize--;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     string GetSpecializationString() const
     {
         switch (specialization)
@@ -608,9 +811,10 @@ public:
     }
 };
 
+int Student::student_count = 0;
+int Group::group_count = 0;
 
 int main() {
-
     int ar[] = { 1, 6, 2, 7, 3, 8, 4, 9, 5, 10 };
     int n = sizeof(ar) / sizeof(ar[0]);
 
@@ -629,6 +833,7 @@ int main() {
     }
     cout << endl;
 
+    Logger::GetInstance();
     Student s1;
     s1.Print();
 

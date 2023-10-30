@@ -1,0 +1,4 @@
+Created a new Student object: John Doe
+Destroyed a Student object: John Doe
+Created a new Student object: John Doe
+Destroyed a Student object: John Doe
