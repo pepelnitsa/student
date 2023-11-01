@@ -1,117 +1,15 @@
 ﻿#include <iostream>
 #include <string>
 #include <fstream>
-
+#pragma warning(disable : 4996)
 using namespace std;
 
-/// <summary>
-/// 
-/// </summary>
-class Logger {
-    static Logger* instance; // 1) приватный статический указатель на единственный экземпляр класса
-    int log_сount = 0; // сколько раз происходила запись строки в файл
-    string path = "C:/1/log.txt";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    Logger() // 2) конструктор - приватный (запрещает создавать объекты за пределами класса)
-    {
-    }
-
-public:
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    static Logger* GetInstance() // 3) публичный статический геттер на получение адреса единственного объекта
-    {
-        // если объекта журнала не существует - он создаётся
-        return instance == nullptr ? instance = new Logger() : instance;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="message"></param>
-    void Write(string message) // записать в журнал строку текста
-    {
-        log_сount++;
-        cout << log_сount << ": " << message << "\n";
-        // альтернативные варианты:
-        // 1) записать строку в коллекцию (массив, список и тд) и хранить данные в памяти
-        // 2) записать строку в файл
-        ofstream output_file(path, ios::app);
-        if (output_file.is_open())
-        {
-            output_file << message << "\n";
-            output_file.close();
-            //cout << "Строка успешно записана в файл.";
-        }
-        else
-        {
-            //cerr << "Не удалось открыть файл для записи.";
-        }
-        // 3) отправлять данные по сети
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="value"></param>
-    void Write(int value)
-    {
-        Write(to_string(value));
-    }
-};
-
-Logger* Logger::instance = nullptr;
-
-/// <summary>
-/// 
-/// </summary>
-class Sort {
-public:
-    Sort() = delete;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="arr"></param>
-    /// <param name="size"></param>
-    static void Bubble(int arr[], int size) {
-        for (int i = 0; i < size - 1; i++) {
-            for (int j = 0; j < size - i - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    swap(arr[j], arr[j + 1]);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    static void Selection(int arr[], int size) {
-        for (int i = 0; i < size - 1; i++) {
-            int minIndex = i;
-            for (int j = i + 1; j < size; j++) {
-                if (arr[j] < arr[minIndex]) {
-                    minIndex = j;
-                }
-            }
-            swap(arr[i], arr[minIndex]);
-        }
-    }
-};
-
-/// <summary>
-/// Represents a date and time with day, month, and year.
-/// </summary>
 class DateTime {
     int day;
     int month;
     int year;
+    static time_t t;
+    static struct tm* now;
 
 public:
     /// <summary>
@@ -196,7 +94,115 @@ public:
     {
         cout << day << "." << month << "." << year;
     }
+
+    int PrintHours()
+    {
+        return now->tm_hour;
+    }
+
+    int PrintMinutes()
+    {
+        return now->tm_min;
+    }
+
+    int PrintSeconds()
+    {
+        return now->tm_sec;
+    }
 };
+
+/// <summary>
+/// 
+/// </summary>
+class Logger
+{
+    static Logger* instance;
+    int log_count = 0;
+    string path = "C:/Users/ihora/source/repos/student/log.txt";
+    DateTime* date_time;
+
+    Logger()
+    {
+    }
+
+public:
+    static Logger* GetInstance()
+    {
+        return instance == nullptr ? instance = new Logger() : instance;
+    }
+
+    void Write(string message)
+    {
+        log_count++;
+        int hours = date_time->PrintHours(), minutes = date_time->PrintMinutes(), seconds = date_time->PrintSeconds();
+        string time = to_string(hours);
+        time += ':';
+        time += to_string(minutes);
+        time += ':';
+        time += to_string(seconds);
+
+        ofstream output_file(path, ios::app);
+        if (output_file.is_open())
+        {
+            output_file << message << " at " << time << "\n";
+            cout << message << " at " << time << '\n';
+            output_file.close();
+        }
+        else
+        {
+        }
+    }
+
+    void Write(int value)
+    {
+        Write(to_string(value));
+    }
+};
+
+
+/// <summary>
+/// 
+/// </summary>
+class Sort {
+public:
+    Sort() = delete;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="arr"></param>
+    /// <param name="size"></param>
+    static void Bubble(int arr[], int size) {
+        for (int i = 0; i < size - 1; i++) {
+            for (int j = 0; j < size - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    swap(arr[j], arr[j + 1]);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    static void Selection(int arr[], int size) {
+        for (int i = 0; i < size - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < size; j++) {
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            swap(arr[i], arr[minIndex]);
+        }
+    }
+};
+
+/// <summary>
+/// Represents a date and time with day, month, and year.
+/// </summary>
+
+
 /// <summary>
 /// Represents a student with personal information and academic performance data.
 /// </summary>
@@ -223,13 +229,19 @@ public:
     /// <summary>
     /// Default constructor for Student, sets default values.
     /// </summary>
-    Student() : Student("John", "Doe", "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) { ThrowError(); }
+    Student() : Student("John", "Doe", "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) {
+        ThrowError();
+        Logger::GetInstance()->Write("An object of type Student was created.");
+    }
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    Student(string name, string surname) : Student(name, surname, "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) { ThrowError(); }
+    Student(string name, string surname) : Student(name, surname, "Smith", "123 Main St.", "0977537789", { 1, 1, 2000 }, { 1, 1, 2022 }) {
+        ThrowError();
+        Logger::GetInstance()->Write("An object of type Student was created.");
+    }
 
     /// <summary>
     /// 
@@ -237,7 +249,7 @@ public:
     /// <param name="birthday"></param>
     Student(string name, string surname, string father_name, string address, string phone_number, const DateTime& birthday, const DateTime& study_start)
     {
-        Logger::GetInstance()->Write("Created a new Student object: " + name + " " + surname);
+        Logger::GetInstance()->Write("An object of type Student was created.");
         ThrowError();
         SetName(name);
         SetSurname(surname);
@@ -253,7 +265,7 @@ public:
     /// </summary>
     ~Student()
     {
-        Logger::GetInstance()->Write("Destroyed a Student object: " + name + " " + surname);
+        Logger::GetInstance()->Write("An object of type Student was destroyed.");
 
         if (hometask_rates != nullptr)
         {
@@ -584,7 +596,10 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    Group() : groupName("Unknown Group"), specialization(Specialization::Other), courseNumber(1), students(nullptr), groupSize(0), capacity(0) { ThrowError(); }
+    Group() : groupName("Unknown Group"), specialization(Specialization::Other), courseNumber(1), students(nullptr), groupSize(0), capacity(0) {
+        ThrowError();
+        Logger::GetInstance()->Write("An object of type Group was created.");
+    }
 
     /// <summary>
     /// 
@@ -592,6 +607,7 @@ public:
     /// <param name="other"></param>
     Group(const Group& other) : groupName(other.groupName), specialization(other.specialization), courseNumber(other.courseNumber), groupSize(other.groupSize), capacity(other.capacity)
     {
+        Logger::GetInstance()->Write("An object of type Group was created.");
         ThrowError();
         students = new Student[capacity];
         for (int i = 0; i < groupSize; i++)
@@ -605,6 +621,7 @@ public:
     /// </summary>
     ~Group()
     {
+        Logger::GetInstance()->Write("An object of type Group was destroyed.");
         delete[] students;
     }
 
@@ -814,7 +831,14 @@ public:
 int Student::student_count = 0;
 int Group::group_count = 0;
 
+time_t DateTime::t = time(0);
+tm* DateTime::now = localtime(&t);
+Logger* Logger::instance = nullptr;
+
 int main() {
+    Logger::GetInstance()->Write("Main started by Alex");
+
+
     int ar[] = { 1, 6, 2, 7, 3, 8, 4, 9, 5, 10 };
     int n = sizeof(ar) / sizeof(ar[0]);
 
@@ -853,6 +877,8 @@ int main() {
     s1.AddExamRate(11);
     s1.AddExamRate(12);
     s1.PrintExamRates();
+
+    Logger::GetInstance()->Write("Main ended by Alex");
 
     return 0;
 }

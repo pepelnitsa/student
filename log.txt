@@ -1,4 +1,5 @@
-Created a new Student object: John Doe
-Destroyed a Student object: John Doe
-Created a new Student object: John Doe
-Destroyed a Student object: John Doe
+Main started by Alex at 16:38:46
+An object of type Student was created. at 16:38:46
+An object of type Student was created. at 16:38:46
+Main ended by Alex at 16:38:46
+An object of type Student was destroyed. at 16:38:46
