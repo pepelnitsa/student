@@ -111,6 +111,28 @@ public:
     }
 };
 
+istream& operator>>(istream& is, DateTime& dt)
+{
+    int day, month, year;
+    cout << "Year:" << endl;
+    is >> year;
+    dt.SetYear(year);
+    cout << "Month:" << endl;
+    is >> month;
+    dt.SetMonth(month);
+    cout << "Day:" << endl;
+    is >> day;
+    dt.SetDay(day);
+    return is;
+}
+
+ostream& operator<<(ostream& os, const DateTime& dt)
+{
+    dt.Print(); 
+    return os;
+}
+
+
 /// <summary>
 /// 
 /// </summary>
@@ -548,9 +570,8 @@ public:
         cout << endl;
     }
 
-    /// <summary>
-    /// Print the student's personal information.
-    /// </summary>
+    Student(const string& n) : name(n) {}
+
     void Print() const
     {
         cout << "Name: " << name << endl;
@@ -592,7 +613,8 @@ enum class Specialization {
     Programmer,
     Mathematician,
     Linguist,
-    Other
+    Other,
+    Unknown
 };
 
 /// <summary>
@@ -607,6 +629,9 @@ class Group {
     int courseNumber;
 
 public:
+
+    friend istream& operator>>(istream& is, Group& obj);
+    friend ostream& operator<<(ostream& os, Group& obj);
 
     /// <summary>
     /// 
@@ -858,6 +883,74 @@ bool operator != (const Group& left, const Group& right)
     return left.getGroupSize() != right.getGroupSize();
 }
 
+ostream& operator<<(ostream& cout, const Specialization& specialization)
+{
+    switch (specialization)
+    {
+    case Specialization::Designer: cout << "Designer"; break;
+    case Specialization::Programmer: cout << "Programmer"; break;
+    case Specialization::Mathematician: cout << "Mathematician"; break;
+    case Specialization::Linguist: cout << "Linguist"; break;
+    case Specialization::Other: cout << "Other"; break;
+    default: cout << "Unknown";
+    }
+    return cout;
+}
+
+istream& operator>>(istream& cin, Specialization& specialization)
+{
+    int specializationInt;
+    cin >> specializationInt;
+
+    switch (specializationInt)
+    {
+    case 0: specialization = Specialization::Designer; break;
+    case 1: specialization = Specialization::Programmer; break;
+    case 2: specialization = Specialization::Mathematician; break;
+    case 3: specialization = Specialization::Linguist; break;
+    case 4: specialization = Specialization::Other; break;
+    default: specialization = Specialization::Unknown;
+    }
+
+    return cin;
+}
+
+istream& operator>>(istream& cin, Group& obj)
+{
+    cout << "Type a group size:" << endl;
+    cin >> obj.groupSize;
+    cout << "Type a group course:" << endl;
+    cin >> obj.courseNumber;
+    cout << "Type a group-name:" << endl;
+    cin >> obj.groupName;
+    cout << "Type a group specialty:" << endl;
+    cin >> obj.specialization;
+
+    obj.students = new Student[obj.groupSize];
+
+    return cin;
+}
+
+ostream& operator<<(ostream& cout, Group& obj)
+{
+    cout << "Group name: " << obj.groupName << endl;
+    cout << "Specialty: " << obj.specialization << endl;
+
+    for (int i = 0; i < obj.groupSize; i++)
+    {
+        cout << "Student " << i + 1 << ":" << endl;
+        cout << "Name: " << obj.students[i].GetName() << endl;
+        cout << "Surname: " << obj.students[i].GetSurname() << endl;
+        cout << "Birthday: ";
+        obj.students[i].GetBirthday().Print();
+        cout << "Study start date: ";
+        obj.students[i].GetStudyStart().Print();
+    }
+
+    return cout;
+}
+
+
 class Fraction {
     int numerator;
     int denominator;
@@ -1065,6 +1158,10 @@ tm* DateTime::now = localtime(&t);
 Logger* Logger::instance = nullptr;
 
 int main() {
+
+    string name = "Ihor";
+    Student s = name;
+    s.Print();
 
     Fraction a(2, 5); // 1/2
     double b = 6;

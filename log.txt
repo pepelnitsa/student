@@ -8,3 +8,33 @@ An object of type Student was created. at 9:36:35
 An object of type Student was created. at 9:36:35
 Main ended by Alex at 9:36:35
 An object of type Student was destroyed. at 9:36:35
+Main started by Alex at 10:26:2
+An object of type Student was created. at 10:26:2
+An object of type Student was created. at 10:26:2
+Main ended by Alex at 10:26:2
+An object of type Student was destroyed. at 10:26:2
+An object of type Student was destroyed. at 10:26:2
+Main started by Alex at 11:5:16
+An object of type Student was created. at 11:5:16
+An object of type Student was created. at 11:5:16
+Main ended by Alex at 11:5:16
+An object of type Student was destroyed. at 11:5:16
+An object of type Student was destroyed. at 11:5:16
+Main started by Alex at 11:5:20
+An object of type Student was created. at 11:5:20
+An object of type Student was created. at 11:5:20
+Main ended by Alex at 11:5:20
+An object of type Student was destroyed. at 11:5:20
+An object of type Student was destroyed. at 11:5:20
+Main started by Alex at 11:5:38
+An object of type Student was created. at 11:5:38
+An object of type Student was created. at 11:5:38
+Main ended by Alex at 11:5:38
+An object of type Student was destroyed. at 11:5:38
+An object of type Student was destroyed. at 11:5:38
+Main started by Alex at 17:19:33
+An object of type Student was created. at 17:19:33
+An object of type Student was created. at 17:19:33
+Main ended by Alex at 17:19:33
+An object of type Student was destroyed. at 17:19:33
+An object of type Student was destroyed. at 17:19:33
