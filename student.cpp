@@ -114,8 +114,7 @@ public:
 /// <summary>
 /// 
 /// </summary>
-class Logger
-{
+class Logger {
     static Logger* instance;
     int log_count = 0;
     string path = "C:/Users/ihora/source/repos/student/log.txt";
@@ -206,8 +205,7 @@ public:
 /// <summary>
 /// Represents a student with personal information and academic performance data.
 /// </summary>
-class Student
-{
+class Student {
     string name;
     string surname;
     string father_name;
@@ -569,9 +567,27 @@ public:
     }
 };
 
-
-enum class Specialization
+bool operator==(const Student& left, const Student& right)
 {
+    return left.CalculateAverageHomeworkRate() == right.CalculateAverageHomeworkRate();
+}
+
+bool operator!=(const Student& left, const Student& right)
+{
+    return left.CalculateAverageHomeworkRate() != right.CalculateAverageHomeworkRate();
+}
+
+bool operator>(const Student& left, const Student& right)
+{
+    return left.CalculateAverageHomeworkRate() > right.CalculateAverageHomeworkRate();
+}
+
+bool operator<(const Student& left, const Student& right)
+{
+    return left.CalculateAverageHomeworkRate() < right.CalculateAverageHomeworkRate();
+}
+
+enum class Specialization {
     Designer,
     Programmer,
     Mathematician,
@@ -582,8 +598,7 @@ enum class Specialization
 /// <summary>
 /// 
 /// </summary>
-class Group
-{
+class Group {
     Student* students;
     int groupSize;
     int capacity;
@@ -680,6 +695,11 @@ public:
         {
             cout << students[i].GetSurname() << " " << students[i].GetName() << endl;
         }
+    }
+
+    int getGroupSize() const
+    {
+        return groupSize;
     }
 
     /// <summary>
@@ -828,6 +848,215 @@ public:
     }
 };
 
+bool operator == (const Group& left, const Group& right)
+{
+    return left.getGroupSize() == right.getGroupSize();
+}
+
+bool operator != (const Group& left, const Group& right)
+{
+    return left.getGroupSize() != right.getGroupSize();
+}
+
+class Fraction {
+    int numerator;
+    int denominator;
+
+public:
+    Fraction();
+    Fraction(int numerator, int denominator);
+
+
+    Fraction(int value)
+    {
+        numerator = value;
+        denominator = 1;
+    }
+
+    double GetDecimal() const;
+    void Print() const;
+    void PrintDecimal() const;
+
+    static Fraction Sum(const Fraction& left, const Fraction& right);
+    bool GreaterThan(const Fraction& another) const;
+    bool IsEquals(const Fraction& another) const;
+    bool LessThan(const Fraction& another) const;
+
+    int GetNumerator() const;
+    int GetDenominator() const;
+    void SetNumerator(int numerator);
+    void SetDenominator(int denominator);
+};
+
+Fraction operator + (const Fraction& f1, const Fraction& f2);
+void F1(Fraction a);
+Fraction F2();
+
+Fraction::Fraction() : Fraction(0, 1)
+{
+
+}
+
+Fraction::Fraction(int numerator, int denominator)
+{
+    SetNumerator(numerator);
+    SetDenominator(denominator);
+}
+
+double Fraction::GetDecimal() const
+{
+    return (double)numerator / denominator;
+}
+
+void Fraction::Print() const
+{
+    cout << numerator << "/" << denominator << "\n";
+}
+
+void Fraction::PrintDecimal() const
+{
+    cout << GetDecimal() << "\n";
+}
+
+int Fraction::GetNumerator() const
+{
+    return numerator;
+}
+
+int Fraction::GetDenominator() const
+{
+    return denominator;
+}
+
+void Fraction::SetNumerator(int numerator)
+{
+    this->numerator = numerator;
+}
+
+void Fraction::SetDenominator(int denominator)
+{
+    if (denominator != 0)
+    {
+        this->denominator = denominator;
+    }
+    else
+    {
+        throw "ERROR!";
+    }
+}
+
+bool Fraction::LessThan(const Fraction& right) const
+{
+    return this->GetDecimal() < right.GetDecimal();
+}
+
+bool Fraction::GreaterThan(const Fraction& right) const
+{
+    return this->GetDecimal() > right.GetDecimal();
+}
+
+bool Fraction::IsEquals(const Fraction& right) const
+{
+    return this->GetDecimal() == right.GetDecimal();
+}
+
+void F1(Fraction a)
+{
+    cout << "explicit c-tor test global function F1\n";
+}
+
+Fraction F2()
+{
+    cout << "explicit c-tor test global function F2\n";
+    return 5;
+}
+
+Fraction Fraction::Sum(const Fraction& left, const Fraction& right)
+{
+    Fraction result;
+    result.SetNumerator(left.numerator * right.denominator + right.numerator * left.denominator);
+    result.SetDenominator(left.denominator * right.denominator);
+    return result;
+}
+
+Fraction operator + (const Fraction& left, const Fraction& right)
+{
+    Fraction result;
+    result.SetNumerator(left.GetNumerator() * right.GetDenominator() + right.GetNumerator() * left.GetDenominator());
+    result.SetDenominator(left.GetDenominator() * right.GetDenominator());
+    return result;
+}
+
+Fraction operator + (const Fraction& left, int right)
+{
+    Fraction result;
+    result.SetNumerator(left.GetNumerator() + (right * left.GetDenominator()));
+    result.SetDenominator(left.GetDenominator());
+    return result;
+}
+
+Fraction operator + (int left, const Fraction& right)
+{
+    Fraction result;
+    result.SetNumerator((left * right.GetDenominator()) + right.GetDenominator());
+    result.SetDenominator(right.GetDenominator());
+    return result;
+}
+
+Fraction operator + (const Fraction& left, double right)
+{
+    Fraction result, tmp;
+    tmp.SetNumerator((int)right);
+    if (right - (int)right > 0)
+        tmp.SetDenominator((right - (int)right) * 10);
+    else
+        tmp.SetDenominator(1);
+    result.SetNumerator(left.GetNumerator() * tmp.GetDenominator() + tmp.GetNumerator() * left.GetDenominator());
+    result.SetDenominator(left.GetDenominator() * tmp.GetDenominator());
+    return result;
+}
+
+Fraction operator + (double left, const Fraction& right)
+{
+    Fraction result, tmp;
+    tmp.SetNumerator((int)left);
+    if (left - (int)left > 0)
+        tmp.SetDenominator((left - (int)left) * 10);
+    else
+        tmp.SetDenominator(1);
+    result.SetNumerator(right.GetNumerator() * tmp.GetDenominator() + tmp.GetNumerator() * right.GetDenominator());
+    result.SetDenominator(right.GetDenominator() * tmp.GetDenominator());
+    return result;
+}
+
+Fraction operator - (const Fraction& left, const Fraction& right)
+{
+    Fraction result;
+    result.SetNumerator(left.GetNumerator() * right.GetDenominator() - right.GetNumerator() * left.GetDenominator());
+    result.SetDenominator(left.GetDenominator() * right.GetDenominator());
+    return result;
+}
+
+Fraction operator * (const Fraction& left, const Fraction& right)
+{
+    Fraction result;
+    result.SetNumerator(left.GetNumerator() * right.GetNumerator());
+    result.SetDenominator(left.GetDenominator() * right.GetDenominator());
+    return result;
+}
+
+Fraction operator / (const Fraction& left, const Fraction& right)
+{
+    if (right.GetNumerator() == 0) {
+        throw "ERROR: Division by zero.";
+    }
+
+    Fraction result;
+    result.SetNumerator(left.GetNumerator() * right.GetDenominator());
+    result.SetDenominator(left.GetDenominator() * right.GetNumerator());
+    return result;
+}
+
 int Student::student_count = 0;
 int Group::group_count = 0;
 
@@ -836,8 +1065,13 @@ tm* DateTime::now = localtime(&t);
 Logger* Logger::instance = nullptr;
 
 int main() {
-    Logger::GetInstance()->Write("Main started by Alex");
 
+    Fraction a(2, 5); // 1/2
+    double b = 6;
+    Fraction result = a + b;
+    cout << result.GetNumerator() << '/' << result.GetDenominator();
+
+    Logger::GetInstance()->Write("Main started by Alex");
 
     int ar[] = { 1, 6, 2, 7, 3, 8, 4, 9, 5, 10 };
     int n = sizeof(ar) / sizeof(ar[0]);
