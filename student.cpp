@@ -12,10 +12,12 @@ class DateTime {
     static struct tm* now;
 
 public:
-    /// <summary>
-    /// // Default constructor initializes the date to January 1, 2000.
-    /// </summary>
-    DateTime() : day(1), month(1), year(2000) {}
+    
+    DateTime() {
+        day = 1;
+        month = 1;
+        year = 2000;
+    }
 
     DateTime(int day, int month, int year)
     {

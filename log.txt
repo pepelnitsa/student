@@ -38,3 +38,9 @@ An object of type Student was created. at 17:19:33
 Main ended by Alex at 17:19:33
 An object of type Student was destroyed. at 17:19:33
 An object of type Student was destroyed. at 17:19:33
+Main started by Alex at 17:24:4
+An object of type Student was created. at 17:24:4
+An object of type Student was created. at 17:24:4
+Main ended by Alex at 17:24:4
+An object of type Student was destroyed. at 17:24:4
+An object of type Student was destroyed. at 17:24:4
